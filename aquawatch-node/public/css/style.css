@@ -1,0 +1,465 @@
+/* ── Reset & base ── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #1e293b;
+  line-height: 1.6;
+  min-height: 100vh;
+
+  /* ── Background image with overlay ── */
+  background-image: 
+    linear-gradient(rgba(238, 245, 250, 0.2), rgba(238, 245, 250, 0.85)),
+    url('/rural%20assam%20image.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+/* ── Header ── */
+.header {
+  background: rgba(255, 255, 255, 0.90);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+  padding: 16px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.header-left { display: flex; align-items: center; gap: 12px; }
+.logo-icon { font-size: 1.8rem; }
+.logo-text {
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: #0f172a;
+}
+.logo-sub {
+  font-weight: 400;
+  font-size: 0.85rem;
+  color: #3b82f6;
+  background: #dbeafe;
+  padding: 2px 12px;
+  border-radius: 20px;
+}
+.header-right { display: flex; align-items: center; gap: 18px; }
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #16a34a;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #16a34a;
+  display: inline-block;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.datetime {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+/* ── Main ── */
+.main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 28px 32px 40px;
+}
+.hero { margin-bottom: 32px; }
+.hero h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+.hero p {
+  font-size: 1rem;
+  color: #475569;
+  margin-top: 4px;
+}
+
+/* ── Cards ── */
+.card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+  padding: 24px;
+  transition: box-shadow 0.2s, transform 0.15s;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+}
+.card:hover {
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.06);
+  transform: translateY(-1px);
+}
+.card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.card h3 i { color: #3b82f6; }
+
+/* ── Grids ── */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 32px;
+}
+.metric-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(4px);
+  border-radius: 14px;
+  padding: 18px 20px;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: all 0.2s;
+}
+.metric-card:hover {
+  box-shadow: 0 2px 12px rgba(37, 99, 235, 0.06);
+  border-color: rgba(59, 130, 246, 0.2);
+}
+.metric-icon {
+  font-size: 1.4rem;
+  color: #3b82f6;
+  width: 40px;
+  text-align: center;
+}
+.metric-data { flex: 1; }
+.metric-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: block;
+}
+.metric-value {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #0f172a;
+  display: block;
+  margin-top: 2px;
+}
+
+/* ── Form ── */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.form-group { margin-bottom: 14px; }
+.form-group label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #334155;
+  margin-bottom: 4px;
+}
+.form-group input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  background: #f8fcff;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+.form-group input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+.btn-primary {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.15s, transform 0.1s;
+  width: 100%;
+  justify-content: center;
+}
+.btn-primary:hover { background: #2563eb; }
+.btn-primary:active { transform: scale(0.98); }
+.btn-primary i { font-size: 1rem; }
+
+/* ── Result card ── */
+.result-card .placeholder {
+  text-align: center;
+  color: #94a3b8;
+  padding: 30px 0;
+}
+.result-card .placeholder i {
+  font-size: 2.4rem;
+  display: block;
+  margin-bottom: 8px;
+  color: #dbeafe;
+}
+.result-status {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 18px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.pill-green { background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }
+.pill-red   { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+.confidence {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+.result-message {
+  font-size: 0.95rem;
+  color: #334155;
+  padding: 8px 0 12px;
+}
+.result-disease {
+  background: #f0f7ff;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin: 8px 0;
+  border-left: 3px solid #3b82f6;
+}
+.result-meta {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  border-top: 1px solid #e9eef3;
+  padding-top: 12px;
+}
+
+/* ── Disease Section ── */
+.disease-section { margin-bottom: 32px; }
+.disease-section h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.disease-section h3 i { color: #3b82f6; }
+.disease-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+.disease-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(4px);
+  border-radius: 12px;
+  padding: 16px 18px;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  text-align: center;
+}
+.disease-card h4 {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 10px;
+}
+.risk-bar {
+  background: #e9eef3;
+  border-radius: 6px;
+  height: 6px;
+  overflow: hidden;
+}
+.risk-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.6s ease;
+  background: #22c55e;
+}
+.risk-label {
+  font-size: 0.65rem;
+  font-weight: 500;
+  display: block;
+  margin-top: 6px;
+  color: #94a3b8;
+}
+
+/* ── Gauges ── */
+.gauges { margin-bottom: 32px; }
+.gauges h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.gauges h3 i { color: #3b82f6; }
+
+.gauge-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 18px;
+  width: 100%;
+}
+
+.gauge-container {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(4px);
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  padding: 6px 4px 4px 4px;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  height: 180px;
+}
+
+/* Force Plotly to fill the container */
+.gauge-container .js-plotly-plot,
+.gauge-container .plotly,
+.gauge-container svg {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 100% !important;
+}
+
+/* ── History ── */
+.history { margin-bottom: 24px; }
+.history h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.history h3 i { color: #3b82f6; }
+.table-wrap {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  overflow-x: auto;
+  padding: 0 4px 4px 0;
+}
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  min-width: 650px;
+}
+.styled-table th {
+  text-align: left;
+  padding: 14px 16px;
+  background: #f0f7ff;
+  font-weight: 600;
+  color: #475569;
+  border-bottom: 2px solid #dbeafe;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.styled-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eef5fa;
+  color: #1e293b;
+}
+.styled-table tr:last-child td { border-bottom: none; }
+.styled-table tr:hover td { background: #f0f7ff; }
+.val-good { color: #16a34a; font-weight: 600; }
+.val-crit { color: #dc2626; font-weight: 600; }
+
+/* ── Trends ── */
+.trends { margin-bottom: 24px; }
+.trends h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.trends h3 i { color: #3b82f6; }
+.trend-chart {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  padding: 8px;
+}
+
+/* ── Footer ── */
+.footer {
+  margin-top: 40px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .metrics { grid-template-columns: repeat(2, 1fr); }
+  .gauge-row { grid-template-columns: 1fr; }
+  .disease-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 640px) {
+  .header { flex-direction: column; align-items: start; gap: 8px; padding: 16px; }
+  .header-right { width: 100%; justify-content: space-between; }
+  .main { padding: 16px; }
+  .metrics { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .disease-grid { grid-template-columns: repeat(2, 1fr); }
+}
+/* ── Only these two heading colours ── */
+.logo-text {
+  color: #0f172a !important; /* AquaWatch – black */
+}
+/* ── Section headings (white) ── */
+.gauges h3,
+.disease-section h3,
+.trends h3,
+.history h3 {
+  color: #ffffff !important;
+}

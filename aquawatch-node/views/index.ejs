@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AquaWatch · Predictor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-left">
+      <span class="logo-icon">💧</span>
+      <span class="logo-text">AquaWatch</span>
+      <span class="logo-sub">Predictor</span>
+    </div>
+    <div class="header-right">
+      <span class="status-badge"><span class="dot"></span> Online</span>
+      <span class="datetime" id="datetime"></span>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="main">
+    <!-- HERO -->
+    <section class="hero">
+      <h1>Water Quality & Disease Predictor</h1>
+      <p>Enter sensor readings to get an AI‑based health assessment and disease risk analysis.</p>
+    </section>
+
+    <!-- GRID: FORM + RESULT -->
+    <div class="grid-2">
+      <!-- FORM -->
+      <div class="card form-card">
+        <h3><i class="fas fa-sliders-h"></i> Sensor Inputs</h3>
+        <form id="predict-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Temperature (°C)</label>
+              <input type="number" id="input-temp" step="0.1" value="<%= current.temperature %>">
+            </div>
+            <div class="form-group">
+              <label>pH</label>
+              <input type="number" id="input-ph" step="0.1" value="<%= current.ph %>">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Turbidity (NTU)</label>
+              <input type="number" id="input-turb" step="0.1" value="<%= current.turbidity %>">
+            </div>
+            <div class="form-group">
+              <label>Dissolved O₂ (mg/L)</label>
+              <input type="number" id="input-do" step="0.1" value="<%= current.dissolved_o2 %>">
+            </div>
+          </div>
+          <button type="submit" class="btn-primary"><i class="fas fa-robot"></i> Predict</button>
+        </form>
+      </div>
+
+      <!-- RESULT -->
+      <div class="card result-card" id="result-card">
+        <h3><i class="fas fa-brain"></i> AI Assessment</h3>
+        <div id="prediction-result">
+          <div class="placeholder">
+            <i class="fas fa-arrow-right"></i>
+            <p>Enter values and click <strong>Predict</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- METRIC CARDS -->
+    <section class="metrics">
+      <div class="metric-card">
+        <div class="metric-icon"><i class="fas fa-thermometer-half"></i></div>
+        <div class="metric-data">
+          <span class="metric-label">Temperature</span>
+          <span class="metric-value" id="temp-val"><%= current.temperature.toFixed(1) %> °C</span>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon"><i class="fas fa-flask"></i></div>
+        <div class="metric-data">
+          <span class="metric-label">pH</span>
+          <span class="metric-value" id="ph-val"><%= current.ph.toFixed(2) %></span>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon"><i class="fas fa-water"></i></div>
+        <div class="metric-data">
+          <span class="metric-label">Turbidity</span>
+          <span class="metric-value" id="turb-val"><%= current.turbidity.toFixed(1) %> NTU</span>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon"><i class="fas fa-wind"></i></div>
+        <div class="metric-data">
+          <span class="metric-label">Dissolved O₂</span>
+          <span class="metric-value" id="do-val"><%= current.dissolved_o2.toFixed(1) %> mg/L</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- GAUGES -->
+    <section class="gauges">
+      <h3><i class="fas fa-chart-simple"></i> Parameter Gauges</h3>
+      <div class="gauge-row">
+        <div id="gauge-ph" class="gauge-container"></div>
+        <div id="gauge-turb" class="gauge-container"></div>
+        <div id="gauge-temp" class="gauge-container"></div>
+      </div>
+    </section>
+
+    <!-- DISEASE RISK SECTION -->
+    <section class="disease-section">
+      <h3><i class="fas fa-virus"></i> Disease Risk Analysis</h3>
+      <div class="disease-grid" id="disease-grid">
+        <div class="disease-card" data-disease="Cholera">
+          <h4>Cholera</h4>
+          <div class="risk-bar"><div class="risk-fill" style="width:0%"></div></div>
+          <span class="risk-label">No data</span>
+        </div>
+        <div class="disease-card" data-disease="Typhoid">
+          <h4>Typhoid</h4>
+          <div class="risk-bar"><div class="risk-fill" style="width:0%"></div></div>
+          <span class="risk-label">No data</span>
+        </div>
+        <div class="disease-card" data-disease="Dysentery">
+          <h4>Dysentery</h4>
+          <div class="risk-bar"><div class="risk-fill" style="width:0%"></div></div>
+          <span class="risk-label">No data</span>
+        </div>
+        <div class="disease-card" data-disease="Gastroenteritis">
+          <h4>Gastroenteritis</h4>
+          <div class="risk-bar"><div class="risk-fill" style="width:0%"></div></div>
+          <span class="risk-label">No data</span>
+        </div>
+        <div class="disease-card" data-disease="Hepatitis A">
+          <h4>Hepatitis A</h4>
+          <div class="risk-bar"><div class="risk-fill" style="width:0%"></div></div>
+          <span class="risk-label">No data</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- HISTORY TABLE -->
+    <section class="history">
+      <h3><i class="fas fa-clock-rotate-left"></i> Recent Predictions</h3>
+      <div class="table-wrap">
+        <table class="styled-table">
+          <thead>
+            <tr><th>Time</th><th>Temp (°C)</th><th>pH</th><th>Turbidity (NTU)</th><th>DO (mg/L)</th><th>Status</th><th>Confidence</th><th>Disease Risk</th></tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TREND CHART -->
+    <section class="trends">
+      <h3><i class="fas fa-chart-line"></i> Parameter Trends</h3>
+      <div class="trend-chart" id="trend-chart"></div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <span>AquaWatch Predictor &bull; Powered by Random Forest</span>
+      <span>v2.1.0</span>
+    </footer>
+  </main>
+
+  <script>
+    // ── DOM refs ──
+    const els = {
+      temp: document.getElementById('temp-val'),
+      ph: document.getElementById('ph-val'),
+      turb: document.getElementById('turb-val'),
+      do: document.getElementById('do-val'),
+      tableBody: document.getElementById('table-body'),
+      result: document.getElementById('prediction-result'),
+      datetime: document.getElementById('datetime'),
+      diseaseGrid: document.getElementById('disease-grid'),
+    };
+
+    // ── Update clock ──
+    function updateClock() {
+      const now = new Date();
+      els.datetime.textContent = now.toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+    updateClock();
+    setInterval(updateClock, 60000);
+
+    // ── Disease risk calculation ──
+    function calculateDiseaseRisks(temp, ph, turb, do2) {
+      const risks = {};
+
+      risks.Cholera = Math.min(100, (Math.max(0, (turb - 5) * 4) + Math.max(0, (8 - do2) * 10)));
+      risks.Typhoid = Math.min(100, (Math.max(0, (turb - 8) * 5) + Math.max(0, (7 - do2) * 5)));
+      const phDeviation = Math.max(0, Math.abs(ph - 7.0) - 0.5) * 10;
+      risks.Dysentery = Math.min(100, (Math.max(0, (turb - 5) * 3) + phDeviation));
+      risks.Gastroenteritis = Math.min(100, (Math.max(0, (temp - 28) * 5) + Math.max(0, (turb - 5) * 3)));
+      risks['Hepatitis A'] = Math.min(100, (Math.max(0, (turb - 5) * 3) + Math.max(0, (7 - do2) * 8)));
+
+      Object.keys(risks).forEach(key => {
+        risks[key] = Math.min(100, Math.round(risks[key]));
+      });
+
+      return risks;
+    }
+
+    // ── Update disease risk UI ──
+    function updateDiseaseRisks(risks) {
+      const cards = els.diseaseGrid.querySelectorAll('.disease-card');
+      cards.forEach(card => {
+        const disease = card.dataset.disease;
+        const risk = risks[disease] || 0;
+        const fill = card.querySelector('.risk-fill');
+        const label = card.querySelector('.risk-label');
+        fill.style.width = risk + '%';
+        if (risk >= 70) {
+          fill.style.background = '#dc2626';
+          label.textContent = 'High Risk';
+          label.style.color = '#dc2626';
+        } else if (risk >= 40) {
+          fill.style.background = '#eab308';
+          label.textContent = 'Moderate Risk';
+          label.style.color = '#eab308';
+        } else {
+          fill.style.background = '#22c55e';
+          label.textContent = 'Low Risk';
+          label.style.color = '#22c55e';
+        }
+        card.title = `${disease}: ${risk}% risk`;
+      });
+    }
+
+    // ── Gauges ──
+    function createGauge(containerId, value, vmin, vmax, label, unit, warn, crit, colorGood) {
+      let barColor = '#EF4444';
+      if (value < crit && value >= warn) barColor = '#EAB308';
+      else if (value < warn) barColor = colorGood || '#2563EB';
+
+      const data = [{
+        type: 'indicator',
+        mode: 'gauge+number',
+        value: value,
+        number: {
+          suffix: ` ${unit}`,
+          font: { size: 14, color: '#1e293b', family: 'Inter' }
+        },
+        gauge: {
+          axis: {
+            range: [vmin, vmax],
+            tickcolor: '#94a3b8',
+            tickfont: { size: 8, color: '#64748b' }
+          },
+          bar: { color: barColor, thickness: 0.2 },
+          bgcolor: 'rgba(255,255,255,0)',
+          borderwidth: 0,
+          steps: [
+            { range: [vmin, warn], color: 'rgba(37,99,235,0.06)' },
+            { range: [warn, crit], color: 'rgba(234,179,8,0.08)' },
+            { range: [crit, vmax], color: 'rgba(239,68,68,0.08)' }
+          ],
+          threshold: {
+            line: { color: '#EF4444', width: 2 },
+            thickness: 0.75,
+            value: crit
+          }
+        },
+        title: {
+          text: label,
+          font: { size: 10, color: '#475569', family: 'Inter' }
+        },
+        domain: { x: [0, 1], y: [0, 1] }
+      }];
+
+      const layout = {
+        paper_bgcolor: 'rgba(255,255,255,0)',
+        plot_bgcolor: 'rgba(255,255,255,0)',
+        margin: { t: 30, b: 10, l: 15, r: 15 },
+        height: 160,
+        width: null,
+        font: { color: '#1e293b' },
+        autosize: true
+      };
+
+      const config = {
+        displayModeBar: false,
+        responsive: true
+      };
+
+      Plotly.newPlot(containerId, data, layout, config);
+      return data[0];
+    }
+
+    function updateGauge(containerId, data, value) {
+      const newData = [{
+        ...data,
+        value: value,
+        gauge: {
+          ...data.gauge,
+          bar: {
+            ...data.gauge.bar,
+            color: value >= data.gauge.threshold.value ? '#EF4444' :
+                   value >= data.gauge.steps[1].range[0] ? '#EAB308' :
+                   '#2563EB'
+          }
+        }
+      }];
+      Plotly.react(containerId, newData, {
+        paper_bgcolor: 'rgba(255,255,255,0)',
+        plot_bgcolor: 'rgba(255,255,255,0)',
+        margin: { t: 30, b: 10, l: 15, r: 15 },
+        height: 160,
+        width: null,
+        font: { color: '#1e293b' },
+        autosize: true
+      }, { displayModeBar: false, responsive: true });
+    }
+
+    // ── Update metrics and gauges ──
+    function updateDashboard(data) {
+      els.temp.textContent = data.temperature.toFixed(1) + ' °C';
+      els.ph.textContent = data.ph.toFixed(2);
+      els.turb.textContent = data.turbidity.toFixed(1) + ' NTU';
+      els.do.textContent = data.dissolved_o2.toFixed(1) + ' mg/L';
+      if (window.gaugeData) {
+        updateGauge('gauge-ph', window.gaugeData.ph, data.ph);
+        updateGauge('gauge-turb', window.gaugeData.turb, data.turbidity);
+        updateGauge('gauge-temp', window.gaugeData.temp, data.temperature);
+      }
+    }
+
+    // ── Show prediction result ──
+    function showPrediction(pred, risks) {
+      const status = pred.status;
+      const confidence = pred.confidence;
+      const isStable = status === 'Stable';
+      const pillClass = isStable ? 'pill-green' : 'pill-red';
+      const icon = isStable ? 'fa-circle-check' : 'fa-circle-exclamation';
+
+      let topDisease = 'None';
+      let topRisk = 0;
+      Object.keys(risks).forEach(key => {
+        if (risks[key] > topRisk) {
+          topRisk = risks[key];
+          topDisease = key;
+        }
+      });
+
+      els.result.innerHTML = `
+        <div class="result-status">
+          <span class="pill ${pillClass}"><i class="fas ${icon}"></i> ${status}</span>
+          <span class="confidence">${confidence.toFixed(1)}%</span>
+        </div>
+        <div class="result-message">${isStable ? 'All parameters are within safe limits.' : 'Parameters indicate potential risk. Review recommended.'}</div>
+        ${topRisk > 30 ? `<div class="result-disease"><strong>Top Disease Risk:</strong> ${topDisease} (${topRisk}%)</div>` : ''}
+        <div class="result-meta">Random Forest · v2.1</div>
+      `;
+
+      updateDiseaseRisks(risks);
+      updateTrendChart();
+    }
+
+    // ── Trend chart ──
+    function updateTrendChart() {
+      fetch('/api/history')
+        .then(res => res.json())
+        .then(history => {
+          if (history.length < 2) {
+            document.getElementById('trend-chart').innerHTML = '<div class="placeholder" style="padding:20px;text-align:center;color:#94a3b8;">Not enough data for trends</div>';
+            return;
+          }
+          const dates = history.map(h => new Date(h.timestamp));
+          const trace1 = {
+            x: dates,
+            y: history.map(h => h.temperature),
+            mode: 'lines+markers',
+            name: 'Temperature (°C)',
+            line: { color: '#2563EB', width: 2 },
+            marker: { color: '#2563EB', size: 4 }
+          };
+          const trace2 = {
+            x: dates,
+            y: history.map(h => h.ph),
+            mode: 'lines+markers',
+            name: 'pH',
+            line: { color: '#8b5cf6', width: 2 },
+            marker: { color: '#8b5cf6', size: 4 },
+            yaxis: 'y2'
+          };
+          const trace3 = {
+            x: dates,
+            y: history.map(h => h.turbidity),
+            mode: 'lines+markers',
+            name: 'Turbidity (NTU)',
+            line: { color: '#f59e0b', width: 2 },
+            marker: { color: '#f59e0b', size: 4 },
+            yaxis: 'y3'
+          };
+          const trace4 = {
+            x: dates,
+            y: history.map(h => h.dissolved_o2),
+            mode: 'lines+markers',
+            name: 'DO (mg/L)',
+            line: { color: '#22c55e', width: 2 },
+            marker: { color: '#22c55e', size: 4 },
+            yaxis: 'y4'
+          };
+          const layout = {
+            paper_bgcolor: 'rgba(255,255,255,0)',
+            plot_bgcolor: 'rgba(255,255,255,0)',
+            margin: { l: 50, r: 50, t: 20, b: 40 },
+            height: 300,
+            grid: { rows: 4, columns: 1, pattern: 'independent' },
+            xaxis: { domain: [0, 1], gridcolor: '#e2e8f0' },
+            yaxis: { title: 'Temp (°C)', gridcolor: '#e2e8f0', anchor: 'free', position: 0 },
+            yaxis2: { title: 'pH', gridcolor: '#e2e8f0', anchor: 'free', position: 1 },
+            yaxis3: { title: 'Turbidity', gridcolor: '#e2e8f0', anchor: 'free', position: 2 },
+            yaxis4: { title: 'DO (mg/L)', gridcolor: '#e2e8f0', anchor: 'free', position: 3 },
+            hovermode: 'x unified',
+            legend: { orientation: 'h', y: 1.02, bgcolor: 'rgba(255,255,255,0.8)' }
+          };
+          Plotly.newPlot('trend-chart', [trace1, trace2, trace3, trace4], layout, { displayModeBar: false });
+        })
+        .catch(e => console.error('Trend error:', e));
+    }
+
+    // ── Fetch history ──
+    async function fetchHistory() {
+      try {
+        const res = await fetch('/api/history');
+        const history = await res.json();
+        const recent = history.slice(-10);
+        let rows = '';
+        recent.forEach(entry => {
+          const time = new Date(entry.timestamp).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+          const statusClass = entry.status === 'Stable' ? 'val-good' : 'val-crit';
+          const risks = entry.risks || calculateDiseaseRisks(entry.temperature, entry.ph, entry.turbidity, entry.dissolved_o2);
+          let topDisease = 'None';
+          let topRisk = 0;
+          Object.keys(risks).forEach(key => {
+            if (risks[key] > topRisk) {
+              topRisk = risks[key];
+              topDisease = key;
+            }
+          });
+          const diseaseDisplay = topRisk > 30 ? `${topDisease} (${topRisk}%)` : 'None';
+          rows += `<tr>
+            <td>${time}</td>
+            <td>${entry.temperature.toFixed(1)}</td>
+            <td>${entry.ph.toFixed(2)}</td>
+            <td>${entry.turbidity.toFixed(1)}</td>
+            <td>${entry.dissolved_o2.toFixed(1)}</td>
+            <td class="${statusClass}">${entry.status}</td>
+            <td>${entry.confidence.toFixed(1)}%</td>
+            <td>${diseaseDisplay}</td>
+          </tr>`;
+        });
+        els.tableBody.innerHTML = rows;
+        updateTrendChart();
+      } catch (e) {
+        console.error('Error fetching history:', e);
+      }
+    }
+
+    // ── Form submit ──
+    document.getElementById('predict-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const temp = parseFloat(document.getElementById('input-temp').value);
+      const ph = parseFloat(document.getElementById('input-ph').value);
+      const turb = parseFloat(document.getElementById('input-turb').value);
+      const do2 = parseFloat(document.getElementById('input-do').value);
+
+      if (isNaN(temp) || isNaN(ph) || isNaN(turb) || isNaN(do2)) {
+        alert('Please enter valid numbers');
+        return;
+      }
+
+      const risks = calculateDiseaseRisks(temp, ph, turb, do2);
+
+      try {
+        const res = await fetch('/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            temperature: temp,
+            ph: ph,
+            turbidity: turb,
+            dissolved_oxygen: do2,
+            risks: risks
+          })
+        });
+        const data = await res.json();
+        if (data.error) {
+          alert('Prediction error: ' + data.error);
+          return;
+        }
+        updateDashboard(data.current);
+        showPrediction(data.prediction, risks);
+        fetchHistory();
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
+    });
+
+    // ── Init ──
+    window.onload = function() {
+      const initial = {
+        temperature: <%= current.temperature %>,
+        ph: <%= current.ph %>,
+        turbidity: <%= current.turbidity %>,
+        dissolved_o2: <%= current.dissolved_o2 %>,
+      };
+      const gaugePH = createGauge('gauge-ph', initial.ph, 0, 14, 'pH', '', 8.0, 9.0);
+      const gaugeTurb = createGauge('gauge-turb', initial.turbidity, 0, 50, 'Turbidity (NTU)', 'NTU', 20, 30);
+      const gaugeTemp = createGauge('gauge-temp', initial.temperature, 10, 45, 'Temp (°C)', '°C', 32, 38);
+      window.gaugeData = { ph: gaugePH, turb: gaugeTurb, temp: gaugeTemp };
+      updateDashboard(initial);
+
+      const initialRisks = calculateDiseaseRisks(initial.temperature, initial.ph, initial.turbidity, initial.dissolved_o2);
+      updateDiseaseRisks(initialRisks);
+
+      fetchHistory();
+
+      els.result.innerHTML = `
+        <div class="placeholder">
+          <i class="fas fa-arrow-right"></i>
+          <p>Enter values and click <strong>Predict</strong></p>
+        </div>
+      `;
+    };
+  </script>
+</body>
+</html>
